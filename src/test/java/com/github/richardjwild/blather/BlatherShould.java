@@ -14,6 +14,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import java.time.Instant;
 
+import static com.github.richardjwild.blather.application.ApplicationBuilder.anApplication;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.when;
 
@@ -38,7 +39,11 @@ public class BlatherShould {
 
     @Before
     public void initialize() {
-        application = ApplicationBuilder.build(input, output, clock);
+        application = anApplication()
+                .withInput(input)
+                .withOutput(output)
+                .withClock(clock)
+                .build();
     }
 
     @Test
