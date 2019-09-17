@@ -1,8 +1,8 @@
-[![CircleCI](https://circleci.com/gh/richardjwild/blather/tree/master.svg?style=shield&circle-token=761a13c0a67f184295191d2c4b50c5629645edae)](https://circleci.com/gh/richardjwild/blather/tree/master)
-
 Blather is a solution to a coding exercise used by Codurance for evaluating job applicants for craftsperson or apprentice positions.
 
-The program runs on the command line and implements a simplified chat room program. No networking or client/server separation is required.
+The program runs on the command line and implements a simplified chat room program.
+
+This fork adds a simple TCP server which can be accessed with `telnet` etc, to practice concurrency and socket programming in Java.
 
 To run the end-to-end test, be in the project directory and execute:
 
