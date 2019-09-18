@@ -2,11 +2,19 @@ package com.github.richardjwild.blather;
 
 class BlatherServer {
 
-    void startOn(int port) {
-        throw new UnsupportedOperationException("implement me");
+    private final TCPServer server;
+    private final int port;
+
+    BlatherServer(int port) {
+        this.port = port;
+
+        this.server = new TCPServer();
+
+        server.startOn(port);
     }
 
+
     void stop() {
-        throw new UnsupportedOperationException("implement me");
+        server.stop();
     }
 }
