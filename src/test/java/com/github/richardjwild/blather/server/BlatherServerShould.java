@@ -9,9 +9,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.io.*;
-import java.net.Socket;
 import java.time.Instant;
-import java.util.stream.Collectors;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -33,7 +31,7 @@ public class BlatherServerShould {
     private BlatherServer app;
 
     @Before
-    public void setUp() {
+    public void setUp() throws IOException {
         app = new BlatherServer(PORT);
     }
 
@@ -53,7 +51,7 @@ public class BlatherServerShould {
                 .thenReturn(now.minusSeconds(ONE_SECOND))
                 .thenReturn(now);
 
-        try (TelnetConnection connection = new TelnetConnection()) {
+        try (SocketConnection connection = new SocketConnection(BlatherServerShould.PORT)) {
 
             connection.writeLine("Alice -> My first message");
             connection.writeLine("Bob -> Hello world!");
@@ -77,29 +75,4 @@ public class BlatherServerShould {
 
     }
 
-    private class TelnetConnection implements AutoCloseable {
-
-        private final BufferedReader in;
-        private final PrintWriter out;
-        private final Socket socket;
-
-        TelnetConnection() throws IOException {
-            this.socket = new Socket("localhost", BlatherServerShould.PORT);
-            this.in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            this.out = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
-        }
-
-        @Override
-        public void close() throws IOException {
-            socket.close();
-        }
-
-        String readAll() {
-            return in.lines().collect(Collectors.joining("\n"));
-        }
-
-        void writeLine(String line) {
-            out.println(line);
-        }
-    }
 }
