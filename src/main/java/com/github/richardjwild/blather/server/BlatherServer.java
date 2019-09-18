@@ -1,6 +1,7 @@
 package com.github.richardjwild.blather.server;
 
 import com.github.richardjwild.blather.time.Clock;
+import com.github.richardjwild.blather.time.SystemClock;
 
 import java.io.IOException;
 
@@ -11,9 +12,7 @@ class BlatherServer {
 
     BlatherServer(int port, Clock clock) {
         this.port = port;
-        Clock clock1 = clock;
         this.server = new TCPServer(clock);
-
     }
 
     void start() throws IOException {
@@ -25,4 +24,10 @@ class BlatherServer {
         server.stop();
     }
 
+
+    public static void main(String[] args) throws IOException {
+        BlatherServer server = new BlatherServer(8080, new SystemClock());
+        server.start();
+        while (true) {}
+    }
 }

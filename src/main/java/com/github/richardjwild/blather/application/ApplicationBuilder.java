@@ -42,6 +42,16 @@ public class ApplicationBuilder {
         return this;
     }
 
+    public ApplicationBuilder withMessageRepository(MessageRepository messageRepository) {
+        this.messageRepository = messageRepository;
+        return this;
+    }
+
+    public ApplicationBuilder withUserRepository(UserRepository userRepository) {
+        this.userRepository = userRepository;
+        return this;
+    }
+
     public Application build() {
         InputParser inputParser = new InputParser();
         Controller controller = new Controller();

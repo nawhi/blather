@@ -1,7 +1,11 @@
 package com.github.richardjwild.blather.server;
 
 import com.github.richardjwild.blather.application.Application;
+import com.github.richardjwild.blather.message.MessageRepository;
+import com.github.richardjwild.blather.persistence.InMemoryMessageRepository;
+import com.github.richardjwild.blather.persistence.InMemoryUserRepository;
 import com.github.richardjwild.blather.time.Clock;
+import com.github.richardjwild.blather.user.UserRepository;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -19,10 +23,15 @@ class TCPServer {
     private ServerSocket serverSocket;
     private List<ClientSession> sessions = new ArrayList<>();
     private AtomicBoolean isRunning = new AtomicBoolean(false);
-    private Clock clock;
+
+    private final Clock clock;
+    private final UserRepository userRepository;
+    private final MessageRepository messageRepository;
 
     TCPServer(Clock clock) {
         this.clock = clock;
+        this.messageRepository = new InMemoryMessageRepository();
+        this.userRepository = new InMemoryUserRepository();
     }
 
     void initializeOn(int port) throws IOException {
@@ -36,6 +45,8 @@ class TCPServer {
                     Application app = anApplication()
                             .withInput(connection.getInput())
                             .withOutput(connection.getOutput())
+                            .withMessageRepository(messageRepository)
+                            .withUserRepository(userRepository)
                             .withClock(clock)
                             .build();
                     ClientSession session = new ClientSession(connection, app).start();
