@@ -1,25 +1,30 @@
 package com.github.richardjwild.blather.server;
 
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
+import com.github.richardjwild.blather.io.Input;
+import com.github.richardjwild.blather.io.Output;
+import jdk.jshell.spi.ExecutionControl;
+
+import java.io.*;
 import java.net.Socket;
 
 class Connection {
+    private final BufferedReader in;
     private PrintWriter out;
     private Socket socket;
 
     Connection(Socket socket) {
         this.socket = socket;
         try {
-            this.out = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
+            this.out = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()), true);
+            this.in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+        System.out.println("finished creating connection");
     }
 
-    public PrintWriter getOutput() {
-        return out;
+    public Output getOutput() {
+        return out::println;
     }
 
     void close() {
@@ -28,5 +33,15 @@ class Connection {
         } catch (IOException ignored) {
 
         }
+    }
+
+    public Input getInput() {
+        return () -> {
+            try {
+                return in.readLine();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        };
     }
 }

@@ -36,18 +36,10 @@ public class TCPServerShould {
     @Test
     public void print_welcome_message_to_one_client() throws IOException {
         try (SocketConnection connection = new SocketConnection(PORT)) {
-            assertEquals("Welcome to Blather", connection.readLine());
-        }
-    }
-
-    @Test
-    public void print_welcome_message_to_two_clients() throws IOException {
-        try (SocketConnection connection = new SocketConnection(PORT);
-             SocketConnection connection2 = new SocketConnection(PORT);
-             SocketConnection connection3 = new SocketConnection(PORT)) {
-            assertEquals("Welcome to Blather", connection.readLine());
-            assertEquals("Welcome to Blather", connection2.readLine());
-            assertEquals("Welcome to Blather", connection3.readLine());
+            System.out.println("TEST: About to read line");
+            String actual = connection.readLine();
+            System.out.println("TEST: Read a line, asserting now");
+            assertEquals("Welcome to Blather", actual);
         }
     }
 }

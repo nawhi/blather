@@ -22,9 +22,9 @@ class SocketConnection implements AutoCloseable {
     }
 
     String readLine() throws IOException {
-        if (!in.ready()) {
-            return null;
-        }
+//        if (!in.ready()) {
+//            return null;
+//        }
         return in.readLine();
     }
 

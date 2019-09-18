@@ -1,19 +1,29 @@
 package com.github.richardjwild.blather.server;
 
-import java.io.IOException;
-import java.io.PrintWriter;
+import com.github.richardjwild.blather.application.Application;
+
+import java.util.concurrent.Future;
+
+import static java.util.concurrent.CompletableFuture.runAsync;
 
 class ClientSession {
     private Connection connection;
+    private Application app;
+    private Future<Void> runningApplication;
 
-    ClientSession(Connection connection) {
+    ClientSession(Connection connection, Application app) {
         this.connection = connection;
-        PrintWriter out = connection.getOutput();
-        out.println("Welcome to Blather");
-        out.flush();
+        this.app = app;
+    }
+
+    ClientSession run() {
+        System.out.println("Starting running application async");
+        runningApplication = runAsync(app::run);
+        return this;
     }
 
     void stop() {
+        runningApplication.cancel(true);
         connection.close();
     }
 
