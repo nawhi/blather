@@ -1,8 +1,6 @@
 package com.github.richardjwild.blather.server;
 
 import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -16,7 +14,7 @@ class TCPServer {
 
     private Future<Void> listenerThread;
     private ServerSocket serverSocket;
-    private List<Session> sessions = new ArrayList<>();
+    private List<ClientSession> sessions = new ArrayList<>();
     private AtomicBoolean isRunning = new AtomicBoolean(false);
 
     void initializeOn(int port) throws IOException {
@@ -26,7 +24,8 @@ class TCPServer {
         listenerThread = runAsync(() -> {
             while (isRunning.get()) {
                 try {
-                    Session session = new Session(serverSocket.accept());
+                    Connection connection = new Connection(serverSocket.accept());
+                    ClientSession session = new ClientSession(connection);
                     sessions.add(session);
                 } catch (IOException ignored) {
 
@@ -36,34 +35,11 @@ class TCPServer {
     }
 
     void stop() throws Exception {
-        if (!isRunning.get()) return;
-
+        if (!isRunning.get())
+            return;
         isRunning.set(false);
-        sessions.forEach(Session::stop);
+        sessions.forEach(ClientSession::stop);
         serverSocket.close();
         listenerThread.cancel(true);
-    }
-
-    private class Session {
-        private Socket socket;
-
-        Session(Socket socket) {
-            this.socket = socket;
-            try {
-                PrintWriter out = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
-                out.println("Welcome to Blather");
-                out.flush();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-        void stop() {
-            try {
-                socket.close();
-            } catch (IOException ignored) {
-
-            }
-        }
     }
 }
