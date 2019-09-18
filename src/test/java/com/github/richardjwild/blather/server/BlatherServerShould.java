@@ -1,4 +1,4 @@
-package com.github.richardjwild.blather;
+package com.github.richardjwild.blather.server;
 
 import com.github.richardjwild.blather.time.Clock;
 import org.junit.After;

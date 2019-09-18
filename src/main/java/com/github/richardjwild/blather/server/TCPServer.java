@@ -1,4 +1,4 @@
-package com.github.richardjwild.blather;
+package com.github.richardjwild.blather.server;
 
 class TCPServer {
     void startOn(int port) {

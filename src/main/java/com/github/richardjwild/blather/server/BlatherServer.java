@@ -1,15 +1,11 @@
-package com.github.richardjwild.blather;
+package com.github.richardjwild.blather.server;
 
 class BlatherServer {
 
     private final TCPServer server;
-    private final int port;
 
     BlatherServer(int port) {
-        this.port = port;
-
         this.server = new TCPServer();
-
         server.startOn(port);
     }
 
