@@ -29,17 +29,13 @@ class TCPServer {
 
         listenerThread = runAsync(() -> {
             while (isRunning.get()) {
-                System.out.println("starting accept() loop");
                 try {
                     Connection connection = new Connection(serverSocket.accept());
-                    System.out.println("got connection");
                     Application app = anApplication()
                             .withInput(connection.getInput())
                             .withOutput(connection.getOutput())
                             .build();
-                    System.out.println("built app");
                     ClientSession session = new ClientSession(connection, app).run();
-                    System.out.println("added session");
                     sessions.add(session);
                 } catch (IOException ignored) {
 

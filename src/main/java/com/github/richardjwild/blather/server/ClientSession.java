@@ -17,7 +17,6 @@ class ClientSession {
     }
 
     ClientSession run() {
-        System.out.println("Starting running application async");
         runningApplication = runAsync(app::run);
         return this;
     }

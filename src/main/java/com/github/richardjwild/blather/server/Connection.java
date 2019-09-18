@@ -20,7 +20,6 @@ class Connection {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        System.out.println("finished creating connection");
     }
 
     public Output getOutput() {

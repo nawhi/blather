@@ -36,9 +36,7 @@ public class TCPServerShould {
     @Test
     public void print_welcome_message_to_one_client() throws IOException {
         try (SocketConnection connection = new SocketConnection(PORT)) {
-            System.out.println("TEST: About to read line");
             String actual = connection.readLine();
-            System.out.println("TEST: Read a line, asserting now");
             assertEquals("Welcome to Blather", actual);
         }
     }

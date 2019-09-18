@@ -16,7 +16,6 @@ public class Application {
     }
 
     public void run() {
-        System.out.println("RUNNING application!");
         output.writeLine(WELCOME_MESSAGE);
         eventLoop.start();
         output.writeLine(GOODBYE_MESSAGE);
