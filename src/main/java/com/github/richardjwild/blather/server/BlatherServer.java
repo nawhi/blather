@@ -8,7 +8,7 @@ class BlatherServer {
 
     BlatherServer(int port) throws IOException {
         this.server = new TCPServer();
-        server.startOn(port);
+        server.initializeOn(port);
     }
 
 

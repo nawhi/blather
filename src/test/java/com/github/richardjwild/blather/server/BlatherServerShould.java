@@ -69,7 +69,7 @@ public class BlatherServerShould {
                     "I wanna party :) (1 second ago)\n" +
                     "Bye!\n";
 
-            assertThat(connection.readAll(), is(expectedOutput));
+            assertThat(connection.readAllLines(), is(expectedOutput));
         }
 
 

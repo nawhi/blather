@@ -21,7 +21,11 @@ class SocketConnection implements AutoCloseable {
         socket.close();
     }
 
-    String readAll() {
+    String readLine() throws IOException {
+        return in.readLine();
+    }
+
+    String readAllLines() {
         return in.lines().collect(Collectors.joining("\n"));
     }
 
