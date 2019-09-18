@@ -2,7 +2,6 @@ package com.github.richardjwild.blather.server;
 
 import com.github.richardjwild.blather.io.Input;
 import com.github.richardjwild.blather.io.Output;
-import jdk.jshell.spi.ExecutionControl;
 
 import java.io.*;
 import java.net.Socket;
@@ -27,7 +26,10 @@ class Connection {
     }
 
     void close() {
-        if (socket.isClosed()) return;
+        if (socket.isClosed()) {
+            return;
+        }
+
         try {
             socket.close();
         } catch (IOException ignored) {
@@ -40,7 +42,7 @@ class Connection {
             try {
                 return in.readLine();
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                return "";
             }
         };
     }

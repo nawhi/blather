@@ -21,7 +21,7 @@ class TCPServer {
 
     private Future<Void> listenerThread;
     private ServerSocket serverSocket;
-    private List<ClientSession> sessions = new ArrayList<>();
+    private List<ClientSession> activeSessions = new ArrayList<>();
     private AtomicBoolean isRunning = new AtomicBoolean(false);
 
     private final Clock clock;
@@ -37,33 +37,39 @@ class TCPServer {
     void initializeOn(int port) throws IOException {
         isRunning.set(true);
         serverSocket = new ServerSocket(port);
+        listenerThread = runAsync(this::runListenerThread);
+    }
 
-        listenerThread = runAsync(() -> {
-            while (isRunning.get()) {
-                try {
-                    Connection connection = new Connection(serverSocket.accept());
-                    Application app = anApplication()
-                            .withInput(connection.getInput())
-                            .withOutput(connection.getOutput())
-                            .withMessageRepository(messageRepository)
-                            .withUserRepository(userRepository)
-                            .withClock(clock)
-                            .build();
-                    ClientSession session = new ClientSession(connection, app).start();
-                    sessions.add(session);
-                } catch (IOException ignored) {
+    private void runListenerThread() {
+        while (isRunning.get()) {
+            try {
+                Connection connection = new Connection(serverSocket.accept());
+                ClientSession session = createSession(connection);
+                session.start();
+                activeSessions.add(session);
+            } catch (IOException ignored) {
 
-                }
             }
-        });
+        }
     }
 
     void stop() throws Exception {
         if (!isRunning.get())
             return;
         isRunning.set(false);
-        sessions.forEach(ClientSession::stop);
+        activeSessions.forEach(ClientSession::stop);
         serverSocket.close();
         listenerThread.cancel(true);
+    }
+
+    private ClientSession createSession(Connection connection) {
+        Application app = anApplication()
+                .withInput(connection.getInput())
+                .withOutput(connection.getOutput())
+                .withMessageRepository(messageRepository)
+                .withUserRepository(userRepository)
+                .withClock(clock)
+                .build();
+        return new ClientSession(connection, app);
     }
 }
