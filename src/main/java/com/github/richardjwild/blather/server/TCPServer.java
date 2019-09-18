@@ -38,7 +38,21 @@ class TCPServer {
         isRunning.set(true);
         serverSocket = new ServerSocket(port);
 
-        listenerThread = runAsync(() -> {
+        Listener listener = new Listener();
+        listenerThread = runAsync(listener::run);
+    }
+
+    void stop() throws Exception {
+        if (!isRunning.get())
+            return;
+        isRunning.set(false);
+        sessions.forEach(ClientSession::stop);
+        serverSocket.close();
+        listenerThread.cancel(true);
+    }
+
+    private class Listener {
+        void run() {
             while (isRunning.get()) {
                 try {
                     Connection connection = new Connection(serverSocket.accept());
@@ -55,15 +69,6 @@ class TCPServer {
 
                 }
             }
-        });
-    }
-
-    void stop() throws Exception {
-        if (!isRunning.get())
-            return;
-        isRunning.set(false);
-        sessions.forEach(ClientSession::stop);
-        serverSocket.close();
-        listenerThread.cancel(true);
+        }
     }
 }
