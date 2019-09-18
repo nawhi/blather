@@ -28,10 +28,6 @@ class SocketConnection implements AutoCloseable {
         return in.readLine();
     }
 
-    String readAllLines() {
-        return in.lines().collect(Collectors.joining("\n"));
-    }
-
     void writeLine(String line) {
         out.println(line);
     }
