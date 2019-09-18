@@ -23,8 +23,12 @@ class SocketConnection implements AutoCloseable {
         socket.close();
     }
 
-    String readLine() throws IOException {
+    String awaitLine() throws IOException {
         return in.readLine();
+    }
+
+    String readLine() throws IOException {
+        return in.ready() ? in.readLine() : null;
     }
 
     String getAllLines() throws IOException {

@@ -5,9 +5,15 @@ import java.io.IOException;
 class BlatherServer {
 
     private final TCPServer server;
+    private int port;
 
-    BlatherServer(int port) throws IOException {
+    BlatherServer(int port) {
+        this.port = port;
         this.server = new TCPServer();
+
+    }
+
+    void start() throws IOException {
         server.initializeOn(port);
     }
 
@@ -15,5 +21,12 @@ class BlatherServer {
     void stop() throws Exception {
         server.stop();
     }
+
+    public static void main(String[] args) throws IOException {
+        BlatherServer server = new BlatherServer(8080);
+        server.start();
+        while (true) {}
+    }
+
 
 }

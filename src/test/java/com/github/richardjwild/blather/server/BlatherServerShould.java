@@ -2,7 +2,6 @@ package com.github.richardjwild.blather.server;
 
 import com.github.richardjwild.blather.time.Clock;
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,11 +27,11 @@ public class BlatherServerShould {
     @Mock
     private Clock clock;
 
-    private BlatherServer app;
+    private BlatherServer app = new BlatherServer(PORT);
 
     @Before
     public void setUp() throws IOException {
-        app = new BlatherServer(PORT);
+        app.start();
     }
 
     @After
@@ -41,36 +40,19 @@ public class BlatherServerShould {
     }
 
     @Test(timeout = 1000)
-    public void connect_to_single_client() throws IOException {
+    public void run_application_with_single_client() throws IOException {
 
         Instant now = Instant.now();
-        when(clock.now())
-                .thenReturn(now.minusSeconds(TWO_MINUTES))
-                .thenReturn(now.minusSeconds(ONE_MINUTE))
-                .thenReturn(now.minusSeconds(FIFTEEN_SECONDS))
-                .thenReturn(now.minusSeconds(ONE_SECOND))
-                .thenReturn(now);
+        when(clock.now()).thenReturn(now.minusSeconds(TWO_MINUTES));
 
         try (SocketConnection connection = new SocketConnection(BlatherServerShould.PORT)) {
 
-            assertEquals("Welcome to Blather", connection.readLine());
+            assertEquals("Welcome to Blather", connection.awaitLine());
 
             connection.writeLine("Alice -> My first message");
-            connection.writeLine("Bob -> Hello world!");
-            connection.writeLine("Alice -> Sup everyone?");
-            connection.writeLine("Bob -> I wanna party :)");
-            connection.writeLine("Emma follows Bob");
-            connection.writeLine("Emma follows Alice");
-            connection.writeLine("Emma wall");
-            connection.writeLine("quit");
+            connection.writeLine("Alice wall");
 
-            String expectedLines = "My first message (2 minutes ago)\n" +
-            "Sup everyone? (15 seconds ago)\n" +
-            "Hello world! (1 minute ago)\n" +
-            "I wanna party :) (1 second ago)\n" +
-            "Bye!\n";
-
-            assertEquals(expectedLines, connection.getAllLines());
+            assertEquals("Alice - My first message (2 minutes ago)", connection.awaitLine());
         }
 
 
