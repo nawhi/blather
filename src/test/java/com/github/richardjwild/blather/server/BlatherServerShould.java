@@ -8,11 +8,11 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.io.*;
+import java.io.IOException;
 import java.time.Instant;
+import java.util.concurrent.ExecutionException;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -36,11 +36,11 @@ public class BlatherServerShould {
     }
 
     @After
-    public void tearDown() {
+    public void tearDown() throws Exception {
         app.stop();
     }
 
-    @Test
+    @Test(timeout = 1000)
     public void display_a_users_posted_messages() throws IOException {
 
         Instant now = Instant.now();
@@ -62,14 +62,12 @@ public class BlatherServerShould {
             connection.writeLine("Emma wall");
             connection.writeLine("quit");
 
-            String expectedOutput = "Welcome to Blather\n" +
-                    "My first message (2 minutes ago)\n" +
-                    "Sup everyone? (15 seconds ago)\n" +
-                    "Hello world! (1 minute ago)\n" +
-                    "I wanna party :) (1 second ago)\n" +
-                    "Bye!\n";
-
-            assertThat(connection.readAllLines(), is(expectedOutput));
+            assertEquals("Welcome to Blather", connection.readLine());
+            assertEquals("My first message (2 minutes ago)", connection.readLine());
+            assertEquals("Sup everyone? (15 seconds ago)", connection.readLine());
+            assertEquals("Hello world! (1 minute ago)", connection.readLine());
+            assertEquals("I wanna party :) (1 second ago)", connection.readLine());
+            assertEquals("Bye!", connection.readLine());
         }
 
 

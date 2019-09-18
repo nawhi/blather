@@ -12,7 +12,7 @@ class BlatherServer {
     }
 
 
-    void stop() {
+    void stop() throws Exception {
         server.stop();
     }
 }
