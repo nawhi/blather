@@ -11,10 +11,10 @@ import java.net.Socket;
 
 import static org.junit.Assert.assertEquals;
 
-public class TCPBlatherShould {
+public class BlatherServerShould {
 
     private static final int PORT = 8080;
-    private final TCPBlather app = new TCPBlather();
+    private final BlatherServer app = new BlatherServer();
 
     @Before
     public void setUp() throws Exception {
@@ -39,7 +39,7 @@ public class TCPBlatherShould {
         private final Socket socket;
 
         TelnetConnection() throws IOException {
-            this.socket = new Socket("localhost", TCPBlatherShould.PORT);
+            this.socket = new Socket("localhost", BlatherServerShould.PORT);
             this.in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         }
 

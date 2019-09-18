@@ -1,6 +1,6 @@
 package com.github.richardjwild.blather;
 
-class TCPBlather {
+class BlatherServer {
 
     void startOn(int port) {
         throw new UnsupportedOperationException("implement me");
