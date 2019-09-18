@@ -27,6 +27,7 @@ class Connection {
     }
 
     void close() {
+        if (socket.isClosed()) return;
         try {
             socket.close();
         } catch (IOException ignored) {

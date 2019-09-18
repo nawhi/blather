@@ -2,6 +2,8 @@ package com.github.richardjwild.blather.server;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 class SocketConnection implements AutoCloseable {
@@ -13,7 +15,7 @@ class SocketConnection implements AutoCloseable {
     SocketConnection(int port) throws IOException {
         this.socket = new Socket("localhost", port);
         this.in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-        this.out = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
+        this.out = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()), true);
     }
 
     @Override
@@ -22,10 +24,15 @@ class SocketConnection implements AutoCloseable {
     }
 
     String readLine() throws IOException {
-//        if (!in.ready()) {
-//            return null;
-//        }
         return in.readLine();
+    }
+
+    String getAllLines() throws IOException {
+        List<String> lines = new ArrayList<>();
+        while (in.ready()) {
+            lines.add(in.readLine());
+        }
+        return String.join("\n", lines);
     }
 
     void writeLine(String line) {

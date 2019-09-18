@@ -1,12 +1,8 @@
 package com.github.richardjwild.blather.server;
 
 import com.github.richardjwild.blather.application.Application;
-import com.github.richardjwild.blather.io.Input;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +31,7 @@ class TCPServer {
                             .withInput(connection.getInput())
                             .withOutput(connection.getOutput())
                             .build();
-                    ClientSession session = new ClientSession(connection, app).run();
+                    ClientSession session = new ClientSession(connection, app).start();
                     sessions.add(session);
                 } catch (IOException ignored) {
 

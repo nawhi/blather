@@ -16,9 +16,14 @@ class ClientSession {
         this.app = app;
     }
 
-    ClientSession run() {
-        runningApplication = runAsync(app::run);
+    ClientSession start() {
+        runningApplication = runAsync(this::runApplication);
         return this;
+    }
+
+    private void runApplication() {
+        app.run();
+        connection.close();
     }
 
     void stop() {
