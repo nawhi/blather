@@ -1,6 +1,7 @@
 package com.github.richardjwild.blather.server;
 
 import com.github.richardjwild.blather.application.Application;
+import com.github.richardjwild.blather.time.Clock;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -18,6 +19,11 @@ class TCPServer {
     private ServerSocket serverSocket;
     private List<ClientSession> sessions = new ArrayList<>();
     private AtomicBoolean isRunning = new AtomicBoolean(false);
+    private Clock clock;
+
+    TCPServer(Clock clock) {
+        this.clock = clock;
+    }
 
     void initializeOn(int port) throws IOException {
         isRunning.set(true);
@@ -30,6 +36,7 @@ class TCPServer {
                     Application app = anApplication()
                             .withInput(connection.getInput())
                             .withOutput(connection.getOutput())
+                            .withClock(clock)
                             .build();
                     ClientSession session = new ClientSession(connection, app).start();
                     sessions.add(session);

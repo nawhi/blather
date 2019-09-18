@@ -27,18 +27,6 @@ class SocketConnection implements AutoCloseable {
         return in.readLine();
     }
 
-    String readLine() throws IOException {
-        return in.ready() ? in.readLine() : null;
-    }
-
-    String getAllLines() throws IOException {
-        List<String> lines = new ArrayList<>();
-        while (in.ready()) {
-            lines.add(in.readLine());
-        }
-        return String.join("\n", lines);
-    }
-
     void writeLine(String line) {
         out.println(line);
     }

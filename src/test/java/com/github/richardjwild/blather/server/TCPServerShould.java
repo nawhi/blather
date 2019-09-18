@@ -1,5 +1,6 @@
 package com.github.richardjwild.blather.server;
 
+import com.github.richardjwild.blather.time.SystemClock;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -16,7 +17,7 @@ public class TCPServerShould {
 
     @Rule
     public Timeout timeout = Timeout.seconds(2);
-    private TCPServer server = new TCPServer();
+    private TCPServer server = new TCPServer(new SystemClock());
 
     @Before
     public void setUp() throws Exception {
@@ -30,7 +31,7 @@ public class TCPServerShould {
 
     @Test
     public void does_not_crash_if_stopped_before_being_started() throws Exception {
-        new TCPServer().stop();
+        new TCPServer(new SystemClock()).stop();
     }
 
     @Test

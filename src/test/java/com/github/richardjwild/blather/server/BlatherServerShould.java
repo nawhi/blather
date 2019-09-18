@@ -18,19 +18,17 @@ import static org.mockito.Mockito.when;
 public class BlatherServerShould {
 
     private static final long TWO_MINUTES = 120;
-    private static final long ONE_MINUTE = 60;
-    private static final long FIFTEEN_SECONDS = 15;
-    private static final long ONE_SECOND = 1;
 
-    private static final int PORT = 8080;
+    private static final int SERVER_PORT = 8080;
 
     @Mock
     private Clock clock;
 
-    private BlatherServer app = new BlatherServer(PORT);
+    private BlatherServer app;
 
     @Before
     public void setUp() throws IOException {
+        app = new BlatherServer(SERVER_PORT, clock);
         app.start();
     }
 
@@ -41,12 +39,11 @@ public class BlatherServerShould {
 
     @Test(timeout = 1000)
     public void run_application_with_single_client() throws IOException {
+        when (clock.now())
+                .thenReturn(Instant.now().minusSeconds(TWO_MINUTES))
+                .thenReturn(Instant.now());
 
-        Instant now = Instant.now();
-        when(clock.now()).thenReturn(now.minusSeconds(TWO_MINUTES));
-
-        try (SocketConnection connection = new SocketConnection(BlatherServerShould.PORT)) {
-
+        try (SocketConnection connection = new SocketConnection(SERVER_PORT)) {
             assertEquals("Welcome to Blather", connection.awaitLine());
 
             connection.writeLine("Alice -> My first message");
@@ -54,8 +51,5 @@ public class BlatherServerShould {
 
             assertEquals("Alice - My first message (2 minutes ago)", connection.awaitLine());
         }
-
-
     }
-
 }

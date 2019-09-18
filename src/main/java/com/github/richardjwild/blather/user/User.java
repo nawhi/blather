@@ -27,8 +27,7 @@ public class User {
 
     @Override
     public boolean equals(Object o) {
-        return o != null
-                && (o instanceof User)
+        return (o instanceof User)
                 && ((User) o).name.equals(this.name);
     }
 
